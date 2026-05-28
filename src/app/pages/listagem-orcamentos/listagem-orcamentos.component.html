@@ -1,4 +1,4 @@
-<section class="card">
+﻿<section class="card">
   <div class="items-header">
     <h2>Listagem de Orçamentos</h2>
     <button type="button" (click)="carregar()">Atualizar</button>
@@ -25,8 +25,15 @@
         <td>{{ o.valorTotal | number:'1.2-2' }}</td>
         <td>{{ o.status }}</td>
         <td>
-          <button type="button" (click)="iniciarEdicao(o)">Editar</button>
-          <button type="button" class="danger" (click)="remover(o)">Remover</button>
+          <button type="button" class="icon-button" (click)="visualizar(o)" aria-label="Visualizar orçamento">
+            <span class="material-icons" aria-hidden="true">visibility</span>
+          </button>
+          <button type="button" class="icon-button" (click)="iniciarEdicao(o)" aria-label="Editar orçamento">
+            <span class="material-icons" aria-hidden="true">edit</span>
+          </button>
+          <button type="button" class="icon-button danger" (click)="remover(o)" aria-label="Remover orçamento">
+            <span class="material-icons" aria-hidden="true">delete</span>
+          </button>
         </td>
         <td>{{ o.dataCriacao }}</td>
       </tr>
@@ -35,3 +42,4 @@
 
   <p *ngIf="!carregando && orcamentos.length === 0">Nenhum orçamento encontrado.</p>
 </section>
+

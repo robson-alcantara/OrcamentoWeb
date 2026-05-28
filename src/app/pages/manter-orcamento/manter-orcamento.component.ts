@@ -17,6 +17,7 @@ export class CriacaoOrcamentoComponent implements OnInit {
   mensagemErro = '';
   resposta?: OrcamentoResponse;
   editando = false;
+  visualizando = false;
   orcamentoId?: string;
 
   form = this.fb.group({
@@ -34,10 +35,16 @@ export class CriacaoOrcamentoComponent implements OnInit {
   ngOnInit(): void {
     this.resetarFormulario();
 
-    const estado = this.router.getCurrentNavigation()?.extras.state as { orcamento?: OrcamentoResponse } | undefined;
-    const orcamento = estado?.orcamento ?? (window.history.state as { orcamento?: OrcamentoResponse }).orcamento;
+    const estado = this.router.getCurrentNavigation()?.extras.state as { orcamento?: OrcamentoResponse; visualizando?: boolean } | undefined;
+    const visualizando = estado?.visualizando ?? (window.history.state as { orcamento?: OrcamentoResponse; visualizando?: boolean }).visualizando;
+    const orcamento = estado?.orcamento ?? (window.history.state as { orcamento?: OrcamentoResponse; visualizando?: boolean }).orcamento;
 
     if (orcamento) {
+      if (visualizando) {
+        this.carregarParaVisualizacao(orcamento);
+        return;
+      }
+
       this.carregarParaEdicao(orcamento);
     }
   }
@@ -57,13 +64,8 @@ export class CriacaoOrcamentoComponent implements OnInit {
     this.itens.removeAt(index);
   }
 
-  cancelarEdicao(): void {
-    this.editando = false;
-    this.orcamentoId = undefined;
-    this.resetarFormulario();
-    this.mensagemSucesso = '';
-    this.mensagemErro = '';
-    this.resposta = undefined;
+  voltarParaListagem(): void {
+    this.router.navigate(['/orcamentos']);
   }
 
   enviar(): void {
@@ -121,6 +123,7 @@ export class CriacaoOrcamentoComponent implements OnInit {
   }
 
   private carregarParaEdicao(orcamento: OrcamentoResponse): void {
+    this.visualizando = false;
     this.editando = true;
     this.orcamentoId = orcamento.id;
     this.form.reset({
@@ -128,6 +131,7 @@ export class CriacaoOrcamentoComponent implements OnInit {
       veiculoId: orcamento.veiculoId,
       itens: []
     });
+    this.form.enable();
 
     this.itens.clear();
 
@@ -140,18 +144,55 @@ export class CriacaoOrcamentoComponent implements OnInit {
           valorUnitario: [item.valorUnitario, [Validators.required, Validators.min(0.01)]]
         }));
       });
+      this.itens.enable();
       return;
     }
 
     this.itens.push(this.criarItemForm());
+    this.itens.enable();
+  }
+
+  private carregarParaVisualizacao(orcamento: OrcamentoResponse): void {
+    this.visualizando = true;
+    this.editando = false;
+    this.orcamentoId = orcamento.id;
+    this.form.reset({
+      clienteId: orcamento.clienteId,
+      veiculoId: orcamento.veiculoId,
+      itens: []
+    });
+    this.form.disable();
+
+    this.itens.clear();
+
+    if (orcamento.itens?.length) {
+      orcamento.itens.forEach((item) => {
+        this.itens.push(this.fb.group({
+          id: [item.id],
+          descricao: [item.descricao, [Validators.required]],
+          quantidade: [item.quantidade, [Validators.required, Validators.min(1)]],
+          valorUnitario: [item.valorUnitario, [Validators.required, Validators.min(0.01)]]
+        }));
+      });
+      this.itens.disable();
+      return;
+    }
+
+    this.itens.push(this.criarItemForm());
+    this.itens.disable();
+    this.form.disable();
   }
 
   private resetarFormulario(): void {
+    this.visualizando = false;
+    this.editando = false;
+    this.orcamentoId = undefined;
     this.form.reset({
       clienteId: null,
       veiculoId: null,
       itens: []
     });
+    this.form.enable();
 
     this.itens.clear();
     this.itens.push(this.criarItemForm());

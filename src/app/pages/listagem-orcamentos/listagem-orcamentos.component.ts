@@ -41,6 +41,11 @@ export class ListagemOrcamentosComponent implements OnInit {
     this.router.navigate(['/'], { state: { orcamento: o } });
   }
 
+  visualizar(o: OrcamentoResponse): void {
+    this.erro = '';
+    this.router.navigate(['/'], { state: { orcamento: o, visualizando: true } });
+  }
+
   remover(o: OrcamentoResponse): void {
     if (!window.confirm(`Deseja remover o orçamento ${o.id}?`)) {
       return;

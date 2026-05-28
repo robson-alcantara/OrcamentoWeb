@@ -1,7 +1,7 @@
 <main class="container">
-  <h1>{{ editando ? 'Atualizar Orçamento' : 'Cadastrar Orçamento' }}</h1>
+  <h1>{{ visualizando ? 'Visualizar Orçamento' : (editando ? 'Atualizar Orçamento' : 'Cadastrar Orçamento') }}</h1>
   <p class="subtitle">
-    {{ editando ? 'Editando o orçamento na mesma tela de cadastro' : 'Envio para API .NET (`POST /orcamentos`)' }}
+    {{ visualizando ? 'Consulta do orçamento em modo somente leitura' : (editando ? 'Editando o orçamento na mesma tela de cadastro' : 'Envio para API .NET (`POST /orcamentos`)' ) }}
   </p>
 
   <form [formGroup]="form" (ngSubmit)="enviar()">
@@ -20,7 +20,7 @@
     <section class="card">
       <div class="items-header">
         <h2>Itens</h2>
-        <button type="button" (click)="adicionarItem()">Adicionar item</button>
+        <button type="button" *ngIf="!visualizando" (click)="adicionarItem()">Adicionar item</button>
       </div>
 
       <div formArrayName="itens">
@@ -44,20 +44,24 @@
             <input type="number" step="0.01" formControlName="valorUnitario" />
           </div>
 
-          <button type="button" class="danger" (click)="removerItem(i)">Remover</button>
+          <button type="button" class="danger" *ngIf="!visualizando" (click)="removerItem(i)">Remover</button>
         </div>
       </div>
     </section>
 
     <section class="card summary">
-      <strong>Total calculado (front): {{ calcularTotalFormulario() | number:'1.2-2' }}</strong>
+      <strong>Total calculado: {{ calcularTotalFormulario() | number:'1.2-2' }}</strong>
     </section>
 
-    <div class="actions">
+    <div class="actions" *ngIf="!visualizando">
       <button type="submit" [disabled]="salvando" style="margin: 0 15px;">
         {{ salvando ? 'Salvando...' : (editando ? 'Salvar alterações' : 'Cadastrar orçamento') }}
       </button>
-      <button type="button" style="margin: 0 15px;" *ngIf="editando" (click)="cancelarEdicao()">Cancelar edição</button>
+      <button type="button" style="margin: 0 15px;" *ngIf="editando" (click)="voltarParaListagem()">Cancelar edição</button>
+    </div>
+
+    <div class="actions" *ngIf="visualizando">
+      <button type="button" (click)="voltarParaListagem()">Voltar à listagem</button>
     </div>
   </form>
 
