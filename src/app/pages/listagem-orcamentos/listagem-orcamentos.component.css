@@ -1,0 +1,23 @@
+.card {
+  padding: 16px;
+  border: 1px solid #ddd;
+  margin: 12px 0;
+}
+.items-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+th, td {
+  border: 1px solid #eee;
+  padding: 8px;
+  text-align: left;
+}
+.error {
+  color: #b00020;
+}

@@ -1,0 +1,74 @@
+<main class="container">
+  <h1>{{ editando ? 'Atualizar Orçamento' : 'Cadastrar Orçamento' }}</h1>
+  <p class="subtitle">
+    {{ editando ? 'Editando o orçamento na mesma tela de cadastro' : 'Envio para API .NET (`POST /orcamentos`)' }}
+  </p>
+
+  <form [formGroup]="form" (ngSubmit)="enviar()">
+    <section class="card">
+      <div class="field">
+        <label for="clienteId">Cliente ID</label>
+        <input id="clienteId" type="number" formControlName="clienteId" />
+      </div>
+
+      <div class="field">
+        <label for="veiculoId">Veículo ID</label>
+        <input id="veiculoId" type="number" formControlName="veiculoId" />
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="items-header">
+        <h2>Itens</h2>
+        <button type="button" (click)="adicionarItem()">Adicionar item</button>
+      </div>
+
+      <div formArrayName="itens">
+        <div
+          class="item-row"
+          *ngFor="let item of itens.controls; let i = index"
+          [formGroupName]="i"
+        >
+          <div class="field grow">
+            <label>Descrição</label>
+            <input type="text" formControlName="descricao" />
+          </div>
+
+          <div class="field small">
+            <label>Quantidade</label>
+            <input type="number" formControlName="quantidade" />
+          </div>
+
+          <div class="field small">
+            <label>Valor Unitário</label>
+            <input type="number" step="0.01" formControlName="valorUnitario" />
+          </div>
+
+          <button type="button" class="danger" (click)="removerItem(i)">Remover</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card summary">
+      <strong>Total calculado (front): {{ calcularTotalFormulario() | number:'1.2-2' }}</strong>
+    </section>
+
+    <div class="actions">
+      <button type="submit" [disabled]="salvando" style="margin: 0 15px;">
+        {{ salvando ? 'Salvando...' : (editando ? 'Salvar alterações' : 'Cadastrar orçamento') }}
+      </button>
+      <button type="button" style="margin: 0 15px;" *ngIf="editando" (click)="cancelarEdicao()">Cancelar edição</button>
+    </div>
+  </form>
+
+  <p class="success" *ngIf="mensagemSucesso">{{ mensagemSucesso }}</p>
+  <p class="error" *ngIf="mensagemErro">{{ mensagemErro }}</p>
+
+  <!-- <section class="card response" *ngIf="resposta">
+    <h3>Resposta da API</h3>
+    <p><strong>ID:</strong> {{ resposta.id }}</p>
+    <p><strong>Status:</strong> {{ resposta.status }}</p>
+    <p><strong>Valor total:</strong> {{ resposta.valorTotal | number:'1.2-2' }}</p>
+    <p><strong>Data criação:</strong> {{ resposta.dataCriacao }}</p>
+  </section> -->
+</main>

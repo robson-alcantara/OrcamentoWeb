@@ -1,0 +1,26 @@
+:host {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #1f2937;
+}
+
+.topnav {
+  background-color: #f1f5f9;
+  overflow: hidden;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.topnav a {
+  float: left;
+  color: #1f2937;
+  text-align: center;
+  padding: 8px 14px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.topnav a:hover {
+  background-color: #e2e8f0;
+  border-radius: 4px;
+}

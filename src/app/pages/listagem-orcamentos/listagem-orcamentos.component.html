@@ -1,0 +1,37 @@
+<section class="card">
+  <div class="items-header">
+    <h2>Listagem de Orçamentos</h2>
+    <button type="button" (click)="carregar()">Atualizar</button>
+  </div>
+
+  <p *ngIf="carregando">Carregando...</p>
+  <p *ngIf="erro" class="error">{{ erro }}</p>
+
+  <table *ngIf="!carregando && orcamentos.length">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cliente ID</th>
+        <th>Valor Total</th>
+        <th>Status</th>
+        <th>Ações</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let o of orcamentos">
+        <td>{{ o.id }}</td>
+        <td>{{ o.clienteId }}</td>
+        <td>{{ o.valorTotal | number:'1.2-2' }}</td>
+        <td>{{ o.status }}</td>
+        <td>
+          <button type="button" (click)="iniciarEdicao(o)">Editar</button>
+          <button type="button" class="danger" (click)="remover(o)">Remover</button>
+        </td>
+        <td>{{ o.dataCriacao }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!carregando && orcamentos.length === 0">Nenhum orçamento encontrado.</p>
+</section>
